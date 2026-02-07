@@ -23,6 +23,7 @@ public class CsvService {
 		try (Reader reader = new BufferedReader(new InputStreamReader(file.getInputStream()))) {
 			CsvToBean<Product> csvToBean = new CsvToBeanBuilder<Product>(reader)
 											.withType(Product.class)
+											.withSeparator('|') //Added this line to read pipeline separated data
 											.withIgnoreLeadingWhiteSpace(true).build();
 
 			List<Product> products = csvToBean.parse();
