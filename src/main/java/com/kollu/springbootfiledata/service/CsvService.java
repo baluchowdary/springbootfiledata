@@ -16,14 +16,16 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.kollu.springbootfiledata.model.Product;
 import com.kollu.springbootfiledata.repository.ProductRepository;
+import com.kollu.springbootfiledata.util.ProductConstant;
 
 @Service
 public class CsvService {
+	
 	@Autowired
 	private ProductRepository repository;
 
-	//here, We are reading data by using OpenCSV concept 
-	
+	// here, We are reading data by using OpenCSV concept
+
 //	public void uploadData(MultipartFile file) throws Exception {
 //		try (Reader reader = new BufferedReader(new InputStreamReader(file.getInputStream()))) {
 //			CsvToBean<Product> csvToBean = new CsvToBeanBuilder<Product>(reader)
@@ -35,61 +37,65 @@ public class CsvService {
 //			repository.saveAll(products); // Persists to H2
 //		}
 //	}
-	
-	
+
 //Here, We are reading data apache common CSV 
-	
+
 	public void uploadData(MultipartFile file) throws Exception {
-	    try (BufferedReader reader = new BufferedReader(new InputStreamReader(file.getInputStream()))) {
-	            	
-	    	// 1. Read the header line once
-	        String headerLine = reader.readLine();
-	        if (headerLine == null) throw new RuntimeException("File is empty");
+		try (BufferedReader reader = new BufferedReader(new InputStreamReader(file.getInputStream()))) {
 
-	        // Auto-detect the comma OR pipeline separator
-	        char delimiter = headerLine.contains("|") ? '|' : ',';
-	        String fullContent = headerLine + "\n" + reader.lines().collect(Collectors.joining("\n"));
-	        StringReader stringReader = new StringReader(fullContent);
+			// 1. Read the header line once
+			String headerLine = reader.readLine();
+			if (headerLine == null)
+				throw new RuntimeException("File is empty");
 
-	        CSVFormat format = CSVFormat.DEFAULT.builder()
-	                .setDelimiter(delimiter)
-	                .setHeader()
-	                .setSkipHeaderRecord(true)
-	                .setIgnoreHeaderCase(true)
-	                .setTrim(true)
-	                .build();
+			// Auto-detect the comma OR pipeline separator
+			char delimiter = headerLine.contains("|") ? '|' : ',';
+			String fullContent = headerLine + "\n" + reader.lines().collect(Collectors.joining("\n"));
+			StringReader stringReader = new StringReader(fullContent);
 
-	        try (CSVParser csvParser = new CSVParser(stringReader, format)) {
+			CSVFormat format = CSVFormat.DEFAULT.builder().setDelimiter(delimiter).setHeader().setSkipHeaderRecord(true)
+					.setIgnoreHeaderCase(true).setTrim(true).build();
+
+			try (CSVParser csvParser = new CSVParser(stringReader, format)) {
 				List<Product> products = new ArrayList<>();
 
 				for (CSVRecord record : csvParser) {
-				    Product product = new Product();
-				    
-				    // Map data based on detected format from your README
-				    if (delimiter == '|') {
-				        product.setName(record.get("PRODUCT_NAME"));
-				        product.setPrice(Double.parseDouble(record.get("PRODUCT_PRICE")));
-				    } else {
-				        product.setName(record.get("name"));
-				        product.setPrice(Double.parseDouble(record.get("price")));
-				    }
-				    products.add(product);
+					try {
+						products.add(mapToProduct(record, delimiter));
+					} catch (Exception e) {
+						System.out.println("Exception..");
+					}
 				}
 				repository.saveAll(products);
 			}
-	    }
+		}
 	}
 
-	
-	
-	public List<Product> getAllProducts() {
-        return repository.findAll(); // Performs SELECT * FROM PRODUCT
-    }
-	
-	//Here, I am deleting uploaded file data before loading new file data
-	public String clearDatabase() {
-	    repository.deleteAll(); // Executes DELETE FROM PRODUCT
-	    return "data deleted";
+	private Product mapToProduct(CSVRecord record, char delimiter) {
+		Product product = new Product();
+
+		if (delimiter == '|') {
+			product.setName(record.get(ProductConstant.PRODUCT_NAME));
+			product.setPrice(Double.parseDouble(record.get(ProductConstant.PRODUCT_PRICE)));
+		} else {
+			product.setName(record.get("name"));
+			product.setPrice(Double.parseDouble(record.get("price")));
+		}
+
+		return product;
 	}
 	
+	
+//fetch all data
+	public List<Product> getAllProducts() {
+		return repository.findAll(); // Performs SELECT * FROM PRODUCT
+	}
+	
+
+	// Here, I am deleting uploaded file data before loading new file data
+	public String clearDatabase() {
+		repository.deleteAll(); // Executes DELETE FROM PRODUCT
+		return "data deleted";
+	}
+
 }
