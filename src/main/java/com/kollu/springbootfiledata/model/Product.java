@@ -1,6 +1,6 @@
 package com.kollu.springbootfiledata.model;
 
-import com.opencsv.bean.CsvBindByName;
+
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -14,8 +14,8 @@ public class Product {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-	@CsvBindByName(column = "PRODUCT_NAME")
+//	@CsvBindByName(column = "PRODUCT_NAME")
 	private String name;
-	@CsvBindByName(column = "PRODUCT_PRICE")
+//	@CsvBindByName(column = "PRODUCT_PRICE")
 	private Double price;
 }

@@ -63,10 +63,18 @@
 		</dependency>
 
 		<!-- files module-->
-		<dependency>
+		<!-- when we want map file data with object fields -->
+		<!--<dependency>
 			<groupId>com.opencsv</groupId>
 			<artifactId>opencsv</artifactId>
 			<version>5.10</version>
+		</dependency>-->
+
+		<!-- when we want read row wise data and read dynamic fields datat -->
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-csv</artifactId>
+			<version>1.11.0</version>
 		</dependency>
 
 		<!--Testing module-->
