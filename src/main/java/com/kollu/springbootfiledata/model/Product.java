@@ -15,10 +15,18 @@ public class Product {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-//	@CsvBindByName(column = "PRODUCT_NAME")
-	@Column(name = "Product_Name")
+
+	//	@CsvBindByName(column = "PRODUCT_NAME")
+	@Column(name = "PRODUCT_NAME")
 	private String name;
-//	@CsvBindByName(column = "PRODUCT_PRICE")
-	@Column(name = "Product_Price")
+
+	//	@CsvBindByName(column = "PRODUCT_PRICE")
+	@Column(name = "PRODUCT_PRICE")
 	private Double price;
+	
+	@Column(name = "PRODUCT_QUANTITY")
+	private int quantity;
+	
+	@Column(name = "PRODUCT_QUALITY")
+	private String quality;
 }

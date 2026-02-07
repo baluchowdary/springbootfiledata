@@ -53,8 +53,13 @@ public class CsvService {
 			String fullContent = headerLine + "\n" + reader.lines().collect(Collectors.joining("\n"));
 			StringReader stringReader = new StringReader(fullContent);
 
-			CSVFormat format = CSVFormat.DEFAULT.builder().setDelimiter(delimiter).setHeader().setSkipHeaderRecord(true)
-					.setIgnoreHeaderCase(true).setTrim(true).build();
+			CSVFormat format = CSVFormat.DEFAULT.builder()
+					.setDelimiter(delimiter)
+					.setHeader()
+					.setSkipHeaderRecord(true)
+					.setIgnoreHeaderCase(true)
+					.setTrim(true)
+					.build();
 
 			try (CSVParser csvParser = new CSVParser(stringReader, format)) {
 				List<Product> products = new ArrayList<>();
@@ -77,9 +82,11 @@ public class CsvService {
 		if (delimiter == '|') {
 			product.setName(record.get(ProductConstant.PRODUCT_NAME));
 			product.setPrice(Double.parseDouble(record.get(ProductConstant.PRODUCT_PRICE)));
+			product.setQuantity(Integer.parseInt(record.get(ProductConstant.PRODUCT_QUANTITY)));
+			product.setQuality(record.get(ProductConstant.PRODUCT_QUALITY)); 
 		} else {
-			product.setName(record.get("name"));
-			product.setPrice(Double.parseDouble(record.get("price")));
+			//product.setName(record.get("name"));
+			//product.setPrice(Double.parseDouble(record.get("price")));
 		}
 
 		return product;
