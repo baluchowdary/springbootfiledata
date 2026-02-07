@@ -9,10 +9,10 @@
 		<version>3.4.1</version>
 		<relativePath /> <!-- lookup parent from repository -->
 	</parent>
-	<groupId>com.kollu.angularone</groupId>
-	<artifactId>springbootfile</artifactId>
+	<groupId>com.kollu.springbootfiledata</groupId>
+	<artifactId>springbootfiledata</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>springbootfile</name>
+	<name>springbootfiledata</name>
 	<description>Spring Boot display file data</description>
 	<url />
 	<licenses>

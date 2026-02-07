@@ -1,0 +1,4 @@
+com\kollu\springbootfiledata\controller\TestController.class
+com\kollu\springbootfiledata\repository\TestRepository.class
+com\kollu\springbootfiledata\model\Project.class
+com\kollu\springbootfiledata\SpringBootFileApplication.class
