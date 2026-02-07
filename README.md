@@ -44,4 +44,6 @@ If Redis server down
 <img width="1490" height="323" alt="image" src="https://github.com/user-attachments/assets/ff1b4c72-d16d-4b26-893d-1c5588072e25" />
 
 
+<img width="1468" height="469" alt="image" src="https://github.com/user-attachments/assets/27efe8e0-9e4c-4fe9-8591-3b27bf0bea4e" />
+
 
