@@ -21,3 +21,17 @@ Get ==> http://localhost:9090/springbootfiledata/csv/readfile
 Delete  ==> http://localhost:9090/springbootfiledata/csv/deletedata
 
 
+===============
+
+Sample pipeline seperated data 
+
+PRODUCT_NAME|PRODUCT_PRICE
+kollu1|25.50
+kollu2|89.99
+kollu3|12.00
+kollu4|45.00
+kollu5|30.25
+kollu6|30.25
+
+
+
