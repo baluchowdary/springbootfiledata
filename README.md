@@ -1,6 +1,7 @@
 Reading comma (,) separated values from file
 
 Post => http://localhost:9090/springbootfiledata/csv/upload
+
 body -> form-data -> key=file then select drop down and choose file option then upload sample .csv file data
 
 
