@@ -11,6 +11,9 @@ import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -38,8 +41,8 @@ public class CsvService {
 //		}
 //	}
 
+	@CachePut(value = "save_products", key = "#file.getOriginalFilename()")
 //Here, We are reading data apache common CSV 
-
 	public void uploadData(MultipartFile file) throws Exception {
 		try (BufferedReader reader = new BufferedReader(new InputStreamReader(file.getInputStream()))) {
 
@@ -92,13 +95,13 @@ public class CsvService {
 		return product;
 	}
 	
-	
+	@Cacheable(value = "all_products")
 //fetch all data
 	public List<Product> getAllProducts() {
 		return repository.findAll(); // Performs SELECT * FROM PRODUCT
 	}
 	
-
+	@CacheEvict(value = "delete_products")
 	// Here, I am deleting uploaded file data before loading new file data
 	public String clearDatabase() {
 		repository.deleteAll(); // Executes DELETE FROM PRODUCT
