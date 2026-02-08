@@ -120,11 +120,17 @@ public class CsvService {
 		return repository.findById(id).orElseThrow();
 	}
 
-	
-	@CacheEvict(value = "delete_products")
+	@CircuitBreaker(name = "redisService", fallbackMethod = "clearDatabaseFallback")
+    @CacheEvict(value = "products", allEntries = true)
 	public String clearDatabase() {
 		repository.deleteAll();
 		return "data deleted";
 	}
+	public String clearDatabaseFallback(Throwable e) {
+       System.out.println("Redis down! Could not evict cache, but proceeding with DB deletion. Reason: {}" + e.getMessage());
+        repository.deleteAll();
+        
+        return "Database cleared (Note: Redis cache might still contain stale data)";
+    }
 
 }

@@ -41,7 +41,7 @@ public class CorsConfig {
     @Bean
     public RedisCacheConfiguration cacheConfiguration() {
         return RedisCacheConfiguration.defaultCacheConfig()
-          .entryTtl(Duration.ofMinutes(60))
+          .entryTtl(Duration.ofMinutes(10)) // After 10 mins, data will remove from redis also, while redis down time we trying to delete data in redis and db
           .serializeValuesWith(SerializationPair.fromSerializer(new GenericJackson2JsonRedisSerializer()));
     }
     
