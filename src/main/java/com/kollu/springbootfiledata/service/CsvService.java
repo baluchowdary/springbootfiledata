@@ -21,9 +21,11 @@ import com.kollu.springbootfiledata.model.Product;
 import com.kollu.springbootfiledata.repository.ProductRepository;
 import com.kollu.springbootfiledata.util.ProductConstant;
 
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
+
 @Service
 public class CsvService {
-	
+
 	@Autowired
 	private ProductRepository repository;
 
@@ -37,11 +39,12 @@ public class CsvService {
 //											.withIgnoreLeadingWhiteSpace(true).build();
 //
 //			List<Product> products = csvToBean.parse();
-//			repository.saveAll(products); // Persists to H2
+//			repository.saveAll(products);
 //		}
 //	}
 
-	@CachePut(value = "save_products", key = "#file.getOriginalFilename()")
+	//@CacheEvict(value = "save_products", key = "#file.getOriginalFilename()")
+	@CacheEvict(value = "save_products", allEntries = true)
 //Here, We are reading data apache common CSV 
 	public void uploadData(MultipartFile file) throws Exception {
 		try (BufferedReader reader = new BufferedReader(new InputStreamReader(file.getInputStream()))) {
@@ -56,13 +59,8 @@ public class CsvService {
 			String fullContent = headerLine + "\n" + reader.lines().collect(Collectors.joining("\n"));
 			StringReader stringReader = new StringReader(fullContent);
 
-			CSVFormat format = CSVFormat.DEFAULT.builder()
-					.setDelimiter(delimiter)
-					.setHeader()
-					.setSkipHeaderRecord(true)
-					.setIgnoreHeaderCase(true)
-					.setTrim(true)
-					.build();
+			CSVFormat format = CSVFormat.DEFAULT.builder().setDelimiter(delimiter).setHeader().setSkipHeaderRecord(true)
+					.setIgnoreHeaderCase(true).setTrim(true).build();
 
 			try (CSVParser csvParser = new CSVParser(stringReader, format)) {
 				List<Product> products = new ArrayList<>();
@@ -86,25 +84,46 @@ public class CsvService {
 			product.setName(record.get(ProductConstant.PRODUCT_NAME));
 			product.setPrice(Double.parseDouble(record.get(ProductConstant.PRODUCT_PRICE)));
 			product.setQuantity(Integer.parseInt(record.get(ProductConstant.PRODUCT_QUANTITY)));
-			product.setQuality(record.get(ProductConstant.PRODUCT_QUALITY)); 
+			product.setQuality(record.get(ProductConstant.PRODUCT_QUALITY));
 		} else {
-			//product.setName(record.get("name"));
-			//product.setPrice(Double.parseDouble(record.get("price")));
+			// product.setName(record.get("name"));
+			// product.setPrice(Double.parseDouble(record.get("price")));
 		}
 
 		return product;
 	}
 	
-	@Cacheable(value = "all_products")
-//fetch all data
+
+	// Circuit breaker for Redis server down scenario
+	@CircuitBreaker(name = "redisService", fallbackMethod = "getAllProductsFallback")
+	@Cacheable(value = "products", key = "'all_products'")
 	public List<Product> getAllProducts() {
+		System.out.println("Fetching all products from Database");
+		return repository.findAll();
+	}
+	// Circuit breaker with religence4J
+	public List<Product> getAllProductsFallback(Throwable e) {
+		System.out.println("Error: Circuit breaker Load data block:: " + e.getMessage());
 		return repository.findAll(); // Performs SELECT * FROM PRODUCT
 	}
 	
+
+	@CircuitBreaker(name = "redisService", fallbackMethod = "getByIdFallback")
+	@Cacheable(value = "products", key = "#id")
+	public Product getProductById(Long id) {
+		System.out.println("Fetching product {} from Database" + id);
+		return repository.findById(id).orElseThrow(() -> new RuntimeException("Product not found"));
+	}
+	// Circuit breaker with religence4J
+	public Product getByIdFallback(Long id, Throwable e) {
+		System.out.println("Redis Down! Circuit OPEN for getById. ID: {}" + id);
+		return repository.findById(id).orElseThrow();
+	}
+
+	
 	@CacheEvict(value = "delete_products")
-	// Here, I am deleting uploaded file data before loading new file data
 	public String clearDatabase() {
-		repository.deleteAll(); // Executes DELETE FROM PRODUCT
+		repository.deleteAll();
 		return "data deleted";
 	}
 

@@ -3,6 +3,7 @@ com\kollu\springbootfiledata\model\Product.class
 com\kollu\springbootfiledata\repository\TestRepository.class
 com\kollu\springbootfiledata\config\CorsConfig.class
 com\kollu\springbootfiledata\SpringBootFileApplication.class
+com\kollu\springbootfiledata\util\CustomCacheErrorHandler.class
 com\kollu\springbootfiledata\controller\CsvController.class
 com\kollu\springbootfiledata\repository\ProductRepository.class
 com\kollu\springbootfiledata\controller\TestController.class
