@@ -54,3 +54,6 @@ If Redis server down
 
 
 -Added Circuit breaker with relisence4J skip the exception while redis server down to avoid API request abnormal termination then continue application flow as we expected.
+
+<img width="1477" height="490" alt="image" src="https://github.com/user-attachments/assets/9d455c76-b28d-45f2-8cf6-b35fd3734fcf" />
+
