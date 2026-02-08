@@ -47,3 +47,10 @@ If Redis server down
 <img width="1468" height="469" alt="image" src="https://github.com/user-attachments/assets/27efe8e0-9e4c-4fe9-8591-3b27bf0bea4e" />
 
 
+-Added redis cache,  to improve the performance.
+
+
+-Added normal way of exception handing for redis server down.
+
+
+-Added Circuit breaker with relisence4J skip the exception while redis server down to avoid API request abnormal termination then continue application flow as we expected.
