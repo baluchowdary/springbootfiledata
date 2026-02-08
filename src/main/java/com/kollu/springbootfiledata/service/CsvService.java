@@ -44,7 +44,7 @@ public class CsvService {
 //	}
 
 	//@CacheEvict(value = "save_products", key = "#file.getOriginalFilename()")
-	@CacheEvict(value = "save_products", allEntries = true)
+	@CacheEvict(value = "products", allEntries = true)
 //Here, We are reading data apache common CSV 
 	public void uploadData(MultipartFile file) throws Exception {
 		try (BufferedReader reader = new BufferedReader(new InputStreamReader(file.getInputStream()))) {
